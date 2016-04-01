@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href="res/popup.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <title>Find Cool Events Nearby</title>
+  </head>
+  <body>
+      <div class = "container-fluid">
+              <div id="form_search" hidden>
+                  <p><h2>Find Cool Events Nearby</h2></p>
+                  <p><h6>Powered by Eventbrite. by Chengxi (Chen) Shi</h6></p>
+                  <form>
+                      <div class='form-group input-group-xs'>
+                          <label for='input_address' class='label label-primary'>
+                              Address:
+                          </label>
+                          <input class='form-control input-xs' id='input_address' placeholder="Enter the Address, blank for current location..." />
+                      </div>
+                      <div class='form-group input-group-xs'>
+                          <label for='input_keyword' class='label label-primary'>
+                              Event Keyword:
+                          </label>
+                          <input class='form-control input-xs' id='input_keyword' placeholder="Enter your event keyword:" required />
+                      </div>
+                      <!-- first div-->
+                      <div class='row input-group-xs'>
+                          <div class='form-group col-xs-3  input-group-xs'>
+                              <label for='select_distance' class='label label-primary'>
+                                  Distance:
+                              </label>
+                              <select class='form-control btn btn-mini small_select more_width' style='padding-left: 0; padding-right: 0;' id='select_distance'>
+                                  <option value='5' selected>&lt;5 miles</option>
+                                  <option value='10'>&lt;10 miles</option>
+                                  <option value='15'>&lt;15 miles</option>
+                                  <option value='25'>&lt;25 miles</option>
+                                  <option value='0'>All</option>
+                              </select>
+                          </div>
+                          <div class='form-group col-xs-3  input-group-xs'>
+                              <label for='select_time' class='label label-primary'>
+                                  Time:
+                              </label>
+                              <select class='form-control btn btn-mini small_select more_width' id='select_time' style='padding-left: 0; padding-right: 0;'>
+                                  <option value='1' >&lt;24 hours</option>
+                                  <option value='2'>&lt;48 hours</option>
+                                  <option value='7'>&lt;1 week</option>
+                                  <option value='weekend' selected>weekend</option>
+                                  <option value='30'>&lt;1 month</option>
+                                  <option value='0'>All</option>
+                              </select>
+                          </div>
+                          <div class='form-group col-xs-3  input-group-xs'>
+                              <label for='select_price' class='label label-primary'>
+                                  Price:
+                              </label>
+                              <select class='form-control btn btn-mini small_select' id='select_price' style='padding-left: 0; padding-right: 0;'>
+                                  <option value='f'>Free</option>
+                                  <option value='p'>Paid</option>
+                                  <option value='0' selected>All</option>
+                              </select>
+                          </div>
+                          <div class='form-group col-xs-3'>
+                              <div class='row'>
+                                  <button type='button' class='btn btn-warning btn-sm' id='button_search'><span class='glyphicon glyphicon-search'></span>Search</button>
+                              </div>
+                              <div class='row'>
+                                  <button type='button' class='btn btn-default btn-xs' id='button_backward' disabled>&lt;&lt;</button>
+                                  <button type='button' class='btn btn-default btn-xs' id='button_forward'>&gt;&gt;</button>
+                              </div>
+                          </div>
+                      </div>
+                  </form>       
+              </div>
+          
+            <!-- search_form ends -->      
+          
+              <div class="" id="div_container">
+                  <img src = "res/loading.gif" id='img_loading' />
+              </div>
+      </div>
+  </body>
+    <script src="res/popup.js"></script>
+    <script src="res/jquery.min.js"></script>
+    <script src="res/moment.min.js"></script>
+</html>
+

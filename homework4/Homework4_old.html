@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- By Chengxi (Chen) Shi-->
+
+<html>
+    <header>
+    
+        <style>
+            body{
+
+            }
+            #container{
+                margin: auto;
+                align-content: center;
+            }
+            #query_form{
+                text-align: center;
+        
+            }.form_caption{
+                text-align: center;
+            }#form_text{
+                                
+            }#form_button{
+
+            }
+            
+        </style>
+        <!-- End of CSS -->
+        
+        <!-- Beginning of Javascript-->
+        <script type="text/javascript">
+            
+            //declaration of global variables
+             var xmlDoc;
+             var outputString;
+            
+            function appendStr(newStr){
+                outputString  = outputString + newStr;
+            }
+            
+            function clearStr(){
+                outputString = "";
+            }
+            
+            function newlineStr(newStr){
+                outputString = outputString + "\n" + newStr;   
+            }
+            
+             function loadXML(url) {
+                 
+                 if (window.XMLHttpRequest)
+                 {
+                     // code for IE7+, Firefox, Chrome, Opera, Safari
+                     xmlhttp=new XMLHttpRequest();
+                 }
+                 else
+                 {
+                     // code for IE6, IE5
+                     xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                 }
+                 xmlhttp.open("GET",url,false); //open, send, responseXML are
+                 xmlhttp.send(); //properties of XMLHTTPRequest
+                 xmlDoc=xmlhttp.responseXML;
+                 return xmlDoc;
+             }
+             // ....... processing the document goes here 
+            
+            function event_click(){
+                
+                var mytext = document.forms["query_form"]["xmlfilename"].value;
+                if (mytext==null ||mytext=="")
+                {
+                    alert("XML File Name Missing.");
+                    return false;
+                }else{
+                    return process_main(mytext);
+                }
+                
+                
+            }//end function event_click
+            
+            function process_main(myurl){
+                
+                loadXML(myurl);
+                clearStr(); //initializing output stream
+                
+                parsing_xml(); //parsing
+                
+                var newwindow = window.open();
+                newwindow.document.write(outputString);
+                return true; // end of this function
+            }
+            
+            
+            
+            //=========================================================================
+            //Recursively Parsing
+            function main_parsing(childN){
+                for (i = 0; i <childN.length; i++){
+                    
+
+                    if(childN.item(i).nodeType==1){
+                        console.log("for i" + childN.item(i).nodeName);
+                        switch (childN.item(i).nodeName){
+                                
+                            case "Table":
+                                
+                                //NEED CHANGE TO CSS!!
+                                newlineStr("<table class = \"my_table\">");
+                                main_parsing(childN.item(i).childNodes);
+                                newlineStr("</table>");
+                                break;
+                                
+                            case "Header":
+                                
+                                newlineStr("<tr class = \"table_header\">");
+                                main_parsing(childN.item(i).childNodes);
+                                newlineStr("</tr>");
+                                break;
+                                
+                            case "Data":
+                                
+                                newlineStr("<td>");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                appendStr("</td>");
+                                break;
+                                
+                            case "Row":
+                                
+                                console.log("ROW!!!");
+                                newlineStr("<tr class = \"table_content\">");
+                                main_parsing(childN.item(i).childNodes);
+                                newlineStr("</tr>");
+                                break;
+                                
+                            case "Feeds":
+                                
+                                newlineStr("<td class = \"feeds_content\">");
+                                newlineStr("<ul>");
+                                main_parsing(childN.item(i).childNodes);
+                                newlineStr("</ul>");
+                                newlineStr("</td>");
+                                break;
+                                
+                            case "Feed":
+                                
+                                newlineStr("<li class = \"feed_list_item\">");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                newlineStr("</li>");
+                                break;
+                                
+                            case "Homepage":
+                                
+                                newlineStr("<td class = \"table_content\">");
+                                newlineStr("<a class=\"table_anchor\" href=\"");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                appendStr("\">");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                newlineStr("</a></td>");
+                                break;
+                                
+                            case "Logo":
+                                
+                                newlineStr("<td class = \"table_content\">");
+                                newlineStr("<img class=\"table_image\" src=\"");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                appendStr("\">");
+                                newlineStr("</td>");
+                                break;
+                                
+                            default:
+                                
+                                newlineStr("<td>");
+                                appendStr(childN.item(i).childNodes[0].nodeValue);
+                                appendStr("</td>");
+                                break;
+                                
+                        }//end switch stmt
+                       
+                    }//end if element node 
+                   
+                }//end for i
+                
+            }//End of Recur_parsing
+            //End of Recursively Parsing
+            //=================================================================
+            
+
+            function parsing_xml(){ 
+                
+                var footb = xmlDoc.documentElement.childNodes;
+                console.log(footb.item(1).childNodes[0].nodeName);
+
+                output_header();
+                main_parsing(footb);//Start Recursively Parsing
+                output_footer();
+                
+            }//end of parsing xml file
+            
+            
+            function output_header(){
+                
+                newlineStr("<!DOCTYPE html>\n<!-- By Chengxi (Chen) Shi-->\n<html>\n<header>\n");
+                
+                //writing styles for classes
+                
+                newlineStr("<style>.mytable{style: 100%;}\n");
+                //my table 
+                           
+                newlineStr(".table_header{font-weight: bold;}\n");
+                //table header
+                
+                newlineStr(".table_content{}\n")
+                //table content
+                
+                newlineStr(".feeds_content{}\n")
+                //feeds content
+                
+                newlineStr(".feed_list_item{}\n");
+                //feed list item
+                
+                newlineStr("table_anchor{}\n.table_image{}\n</style>");
+                //End writing styles for classes
+                
+                newlineStr("</header><body>");
+                
+            }//end of output_header
+            
+            function output_footer(){
+                
+                newlineStr("</body><noscript></html>");
+                
+            }//end of output_header
+            
+        </script>
+        <!-- End of Javascript-->
+        
+    </header>
+    <!-- End of header-->
+    
+    <body>
+        <div id="container">
+            <br><br>
+            <form id="query_form">
+
+                <p class="form_caption">
+                    Enter URL for Company List XML File
+                </p>
+                
+                <input id = "form_text" type = "text" name ="xmlfilename">
+
+                <br><br>
+
+                <input id = "form_button" type = "button" value="Submit Query" onclick="event_click()">
+
+            </form>
+            <!-- End of Form-->
+        
+        </div>
+        <!-- End of Container-->
+        
+        <noscript>
+    </body>
+    <!-- End of Header-->
+        
+</html>

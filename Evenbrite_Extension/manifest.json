@@ -1,0 +1,32 @@
+{
+    "manifest_version": 2,
+
+    "name": "Find Cool Events",
+    "description": "This extension uses Eventbrite API to find nearby events for you. (Powered by Eventbrite)",
+    "version": "0.1",
+    "icons": {"64": "res/icon.png"},
+    "browser_action": {
+        "default_icon": "res/icon.png",
+        "default_popup": "popup.html",
+        "default_title": "Click to Find Cool Events Nearby."
+    },
+
+     "content_scripts": [
+    {
+        "matches": ["http://*/*","https://*/*"],
+        "js": ["res/jquery.min.js","res/moment.min.js"],
+        "css":["res/popup.css"],
+        "all_frames": true
+    }],
+
+
+    "permissions": [
+        "tabs",
+        "geolocation",
+        "webRequest",
+        "https://ajax.googleapis.com/",
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js",
+        "https://maxcdn.bootstrapcdn.com/bootstrap/*",
+        "https://www.eventbriteapi.com/v3/users/me/?token=ALL7YMMJU7W33ROWD2RD"
+    ]
+}
