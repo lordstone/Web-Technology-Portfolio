@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<script src="./openlayer_tile_files/OpenLayers.js"></script>
+<link rel="stylesheet" type="text/css" href="./openlayer_tile_files/style.css">
+<script type="text/javascript">
+
+function init()
+{
+    var lat = 0; 
+    var lon = 0;
+    var lonlat = new OpenLayers.LonLat(lon, lat);
+    
+	var map = new OpenLayers.Map("basicMap");
+    var mapnik = new OpenLayers.Layer.OSM();
+    var layer_cloud = new OpenLayers.Layer.XYZ(
+        "clouds",
+        "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.4,
+            sphericalMercator: true
+
+        }
+    );
+
+    var layer_precipitation = new OpenLayers.Layer.XYZ(
+        "precipitation",
+        "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.2,
+            sphericalMercator: true
+        }
+    );
+
+    map.addLayers([mapnik,  layer_cloud ,layer_precipitation]);
+    map.setCenter(new OpenLayers.LonLat(-118.2817648,34.0256596 ).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 10);
+
+
+}
+
+</script>
+
+
+</head>
+
+<body onload="init()">
+<div id="basicMap" class="olMap" style="height:400px;width:400px">
+</div>
+
+
+</body></html>

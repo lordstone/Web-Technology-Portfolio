@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="KEEP SILENCE">
+<meta name="author" content="Yanhua Zheng">
+<title>Forecast Search</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./openlayer_tile_files/style.css">
+<script src="./openlayer_tile_files/OpenLayers.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="dist/jquery.validate.js"></script>
+<script src="lib/jquery.form.js"></script>
+<script src="lib/OpenLayers.js"></script>
+<script src="//connect.facebook.net/en_US/all.js"></script>
+<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script>
+		function clickHandler()
+		{
+			alert("CALL!");
+		   FB.getLoginStatus(function(response) {
+			if (response.status === 'connected') {
+				var uid = response.authResponse.userID;
+				var accessToken = response.authResponse.accessToken;
+				alert("You have authorized.");
+			} 
+			else {
+			  FB.login(function(response) {
+				if (response.authResponse) {
+					console.log('Welcome!  Fetching your information.... ');
+					FB.api('/me', function(response) {
+						console.log('Good to see you, ' + response.name + '.');
+					});
+				} 
+				else {
+					console.log('User cancelled login or did not fully authorize.');
+				}
+			});
+			} 
+
+		});
+		FB.ui({
+			method: 'feed',
+			description: 'Clear,75F',
+			name:'Current Weather in Los Angeles,CA',
+			link: 'http://forecast.io/',
+			picture: 'http://cs-server.usc.edu:45678/hw/hw8/images/fb_icon.png',
+			caption: 'WEATHER INFORMATION FROM FORCAST.IO',
+		}, function(response){});
+	
+		}
+	jQuery(function() {
+		
+        var j = jQuery("#searchForm").validate({
+			rules: {
+				addr: "required",
+				city: "required",
+				state: "required"
+			},
+			messages: {
+				addr: "Please enter the street address",
+				city: "Please enter the city",
+				state: "Please select a state"
+			},
+			submitHandler: function(form) {
+				$.ajax({	
+						url: "http://hw8-env-yohanna.elasticbeanstalk.com/",
+						type: "get",
+						data: { 
+							"addr": "2816 Ellendale Place" ,
+							"city": "LA",
+							"state": "CA",
+							"unit": "us"
+						},
+						error: function(){
+							alert("not Found!");
+						},		
+						success: function( datast ){
+							alert("succeed");
+							weather_icon=datast.currently.icon;
+							weather_summary=datast.currently.summary;
+							city = "Los Angeles";
+							state= "CA";
+							unit= "us";
+							if(unit=='us'){unit_out='&#8457';}
+							else{unit_out='&#8451';}
+							now_temp=Math.round(datast.currently.temperature);
+							now_high_temp =Math.round(datast.daily.data[0].temperatureMax);
+							now_low_temp =Math.round(datast.daily.data[0].temperatureMin);
+							switch (weather_icon) { 
+							case 'clear-day':
+								src_img = "images/clear.png";
+								break;
+							case 'clear-night':
+								src_img = "images/clear_night.png";
+								break;
+							case 'rain':
+								src_img = "images/rain.png";
+								break;
+							case 'snow':
+								src_img = "images/snow.png";
+								break;
+							case 'sleet':
+								src_img = "images/sleet.png";
+								break;
+							case 'wind':
+								src_img = "images/wind.png";
+								break;
+							case 'fog':
+								src_img = "images/fog.png";
+								break;
+							case 'cloudy':
+								src_img = "images/cloudy.png";
+								break;
+							case 'partly-cloudy-day':
+								src_img = "images/cloud_day.png";
+								break;
+							default:
+								src_img = "images/cloud_night.png";
+							}
+							prec_inten=datast.currently.precipIntensity;
+							if(prec_inten<0.002){
+								prec="None";
+							}
+							if(prec_inten>=0.002&&prec_inten<0.017){
+								prec="Very Light";
+							}
+							if(prec_inten>=0.017&&prec_inten<0.1){
+								prec="Light";
+							}
+							if(prec_inten>=0.1&&prec_inten<0.4){
+								prec="Moderate";
+							}
+							if(prec_inten>=0.4){
+								prec="Heavy";
+							}
+							chance=datast.currently.precipProbability;
+							chance=Math.round(100*chance);
+							
+							windSpeed=datast.currently.windSpeed;
+							windSpeed = windSpeed.toFixed(2);
+							
+							dew=datast.currently.dewPoint;
+							dew = dew.toFixed(2);
+							
+							humidity=datast.currently.humidity;
+							humidity=Math.round(100*humidity);
+							
+							visib = datast.currently.visibility;
+							visib = visib.toFixed(2);
+							
+							sunrise = datast.daily.data[0].sunriseTime;
+							sunset  = datast.daily.data[0].sunsetTime;
+							
+							var date = new Date(sunrise*1000);
+							h = date.getHours();
+							m = date.getMinutes();
+							if(h>=11){
+								sep_day ="PM";
+								h = h-11;
+							}
+							else{
+								sep_day ="AM";
+							}
+							h = (h+1 < 10 ? '0'+(h+1) : h+1) + ':';
+							m = (m < 10 ? '0'+m : m) + ' ';
+							sunrise_out = h+m+sep_day;
+							
+							var date2 = new Date(sunset*1000);
+							h = date2.getHours();
+							m = date2.getMinutes();
+							if(h>=11){
+								sep_day ="PM";
+								h = h-11;
+							}
+							else{
+								sep_day ="AM";
+							}
+							h = (h+1 < 10 ? '0'+(h+1) : h+1) + ':';
+							m = (m < 10 ? '0'+m : m) + ' ';
+							sunset_out = h+m+sep_day;
+							
+							//$('#nowWeatherIcon').attr('src',src_img);
+							html_insert ='<span class="tab-pane fade in active" id="now"><div class="row" id="nowSummary"><div class="col-md-6" style="background-color:rgb(250,125,125);height:125px;"><div class="row" id="id1"><div class="col-xs-12 col-md-6"  ><img src="';
+							html_insert += src_img;
+							html_insert +='" style="width:100px;"></img></div><div class="col-xs-12 col-md-6" style="padding-left:0;padding-right:0"><table><tr><td colspan="2" style="text-align:center;"><label for="weather" style="height:30px;margin-top:10px" class="font1">';
+							html_insert +=weather_summary;
+							html_insert +="&nbspin&nbsp";
+							html_insert +=city;
+							html_insert +=',';
+							html_insert +=state;
+							html_insert +='</label></td></tr><tr><td colspan="2" style="text-align:center;"><label for="temp" style="height:30px;" class="font1 font4">';
+							html_insert +=now_temp;
+							html_insert +=unit_out;
+							html_insert +='</label></td></tr><tr style="height:40px;"><td style="text-align:right;"><label for="hltemp" ><span style="color:blue">L:';
+							html_insert +=now_low_temp;
+							html_insert +=unit_out;
+							html_insert +='</span>|<span style="color:green">&nbspH:';
+							html_insert +=now_high_temp;
+							html_insert +=unit_out;
+							html_insert +='</span></label></td><td style="text-align:right" width="60px"><img onclick=clickHandler() src="images/fb_icon.png" style="height:30px;width:30px"/></td></tr></table></div></div></div><div class="col-xs-12 col-md-6"></div></div></span>';
+							$("#myTabContent").append( html_insert );
+							
+							html_insert2 ='<div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Precipitation</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=prec;
+							html_insert2 +='</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Chance of Rain</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=chance;
+							html_insert2 +='%</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Wind Speed</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=windSpeed;
+							if(unit=='us'){
+								html_insert2 +='&nbspmph</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Dew Point</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else {
+								html_insert2 +='&nbspm/s</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Dew Point</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=dew;
+							if(unit=='us'){
+								html_insert2 +='&#8457</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Humidity</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else{
+								html_insert2 +='&#8451</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Humidity</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=humidity;
+							html_insert2 +='%</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Visibility</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=visib;
+							if(unit=='us'){
+								html_insert2 +='&nbspmi</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunrise</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else{
+								html_insert2 +='&nbspkm</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunrise</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=sunrise_out;
+							html_insert2 +='</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunset</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=sunset_out;
+							html_insert2 +='</label></div></div></div>';
+							$("#id1").append(html_insert2);
+							
+							longti =datast.longitude;
+							lati = datast.latitude;
+							html_insert3='<div class="col-xs-12 col-md-6 olMap" id="basicMap" style="height:445px"></div>';
+							$("#nowSummary").append(html_insert3);
+	/////////////////////////////////////////////
+	var map = new OpenLayers.Map("basicMap");
+    var mapnik = new OpenLayers.Layer.OSM();
+    var layer_cloud = new OpenLayers.Layer.XYZ(
+        "clouds",
+        "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.4,
+            sphericalMercator: true
+
+        }
+    );
+
+    var layer_precipitation = new OpenLayers.Layer.XYZ(
+        "precipitation",
+        "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.2,
+            sphericalMercator: true
+        }
+    );
+
+    map.addLayers([mapnik,  layer_cloud ,layer_precipitation]);
+    map.setCenter(new OpenLayers.LonLat(-118.2817648,34.0256596 ).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 10);
+	//////////////////////////////////////////
+							
+							html_day_insert1 = '<div class="tab-pane fade" id="day"><div class="row" id="nextDay"><div class="col-xs-12" style="background-color:rgb(51,122,182);;height:35px;"><div class="row" id="nextDay2" style="margin-top:15px;TEXT-ALIGN: center;textVALIGN: center;"><div class="col-xs-2 col-xs-offset-1"><span class="font1">Time</span></div><div class="col-xs-2 "><span class="font1">Summary</span></div><div class="col-xs-2 "><span class="font1">Cloud Cover</span></div><div class="col-xs-2"><span class="font1">Temp(';
+							if(unit=='us'){
+								html_day_insert1 +='&#8457'+')</span></div><div class="col-xs-2 "><span class="font1">View Details</span></div></div></div>';
+							}
+							else{
+								html_day_insert1 +='&#8451'+')</span></div><div class="col-xs-2 "><span class="font1">View Details</span></div></div></div>';
+							}
+							for(var i=0;i<24;i++){
+								day_time = datast.hourly.data[i].time;
+								var date3 = new Date(day_time*1000);
+								h = date3.getHours();
+								m = date3.getMinutes();
+								if(h>=11){
+									sep_day ="PM";
+									h = h-11;
+								}
+								else{
+									sep_day ="AM";
+								}
+								h = (h+1 < 10 ? '0'+(h+1) : h+1) + ':';
+								m = (m < 10 ? '0'+m : m) + ' ';
+								day_time_output = h+m+sep_day;
+								
+								day_icon = datast.hourly.data[i].icon;
+								switch (day_icon) { 
+								case 'clear-day':
+									src_img = "images/clear.png";
+									break;
+								case 'clear-night':
+									src_img = "images/clear_night.png";
+									break;
+								case 'rain':
+									src_img = "images/rain.png";
+									break;
+								case 'snow':
+									src_img = "images/snow.png";
+									break;
+								case 'sleet':
+									src_img = "images/sleet.png";
+									break;
+								case 'wind':
+									src_img = "images/wind.png";
+									break;
+								case 'fog':
+									src_img = "images/fog.png";
+									break;
+								case 'cloudy':
+									src_img = "images/cloudy.png";
+									break;
+								case 'partly-cloudy-day':
+									src_img = "images/cloud_day.png";
+									break;
+								default:
+									src_img = "images/cloud_night.png";
+								}
+								day_cloudCover = datast.hourly.data[i].cloudCover;
+								day_cloudCover = Math.round(100*day_cloudCover);
+								
+								day_temp = datast.hourly.data[i].temperature;
+								day_temp = day_temp.toFixed(2);
+								
+								day_windSpeed = datast.hourly.data[i].windSpeed;
+								day_humidity = Math.round(100*datast.hourly.data[i].humidity);
+								day_visib = datast.hourly.data[i].visibility;
+								day_pressure = datast.hourly.data[i].pressure;
+								
+								html_day_insert1 += '<div class="col-xs-12" style="background-color:white;"><div class="row" id="nextDay2" style="margin-top:15px;TEXT-ALIGN: center;"><div class="col-xs-2 col-xs-offset-1"><span class="font1 font5">' ;
+								html_day_insert1 += day_time_output ;
+								html_day_insert1 += '</span></div><div class="col-xs-2 "><img src="' ;
+								html_day_insert1 += src_img ;
+								html_day_insert1 += '" style="width:35px;margin-top:-10px"></img></div><div class="col-xs-2 "><span class="font1 font5">' ;
+								html_day_insert1 += day_cloudCover;
+								html_day_insert1 += '%</span></div><div class="col-xs-2"><span class="font1 font5">' ;
+								html_day_insert1 += day_temp;
+								html_day_insert1 += '</span></div><div class="col-xs-2 "><a class="glyphicon glyphicon-plus" data-toggle="collapse" href="#collapse';
+								html_day_insert1 += i+'" style="margin-top:-10px"></a></div><div class="col-xs-1"></div><div id="collapse';
+								html_day_insert1 += i+'" class=" panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne"><div class="panel-body" style="background-color:rgb(233,233,233);margin-top:25px"><div class="row" style="background-color:white;TEXT-ALIGN: center;height:40px;margin-left:20px;margin-right:20px"><div class="col-xs-3 " style="margin-top:20px"><span class="font1 font6">Wind</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font6">Humidity</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font6">Visibility</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font6">Pressure</span></div></div><div class="row" style="background-color:rgb(233,233,233);TEXT-ALIGN: center;height:40px;margin-left:20px;margin-right:20px"><div class="col-xs-3 " style="margin-top:20px"><span class="font1 font5">' ;
+								html_day_insert1 += day_windSpeed;
+								if(unit=='us'){
+									html_day_insert1 += 'mph';
+								}
+								else{
+									html_day_insert1 += 'm/s';
+								}
+								html_day_insert1 += '</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font5">' ;
+								html_day_insert1 += day_humidity ;
+								html_day_insert1 += '%</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font5">' ;
+								html_day_insert1 += day_visib ;
+								if(unit=='us'){
+									html_day_insert1 += 'mi';
+								}
+								else{
+									html_day_insert1 += 'km';
+								}
+								html_day_insert1 += '</span></div><div class="col-xs-3" style="margin-top:20px"><span class="font1 font5">' ;
+								html_day_insert1 += day_pressure ;
+								if(unit=='us'){
+									html_day_insert1 += 'mb';
+								}
+								else{
+									html_day_insert1 += 'hPa';
+								}
+								html_day_insert1 += '</span>								</div>							</div>						</div>					</div>				</div></div>' ;
+							}
+							html_day_insert1 += '</div></div>' ;
+							$("#myTabContent").append(html_day_insert1);
+							
+							/////////////////////////////////////////////////////////
+							
+							html_week_insert='<div class="tab-pane fade" id="week"  ><div class="row" id="nextWeek">			<div class="col-xs-12" style="background-color:rgb(47,52,57);"><p><div class="row">';
+							
+							for(var i=1;i<8;i++){
+								switch (i) { 
+								case 1:
+									bgcol = "rgb(54,125,181)";
+									break;
+								case 2:
+									bgcol = "rgb(236,68,68)";
+									break;
+								case 3:
+									bgcol = "rgb(230,142,79)";
+									break;
+								case 4:
+									bgcol = "rgb(167,164,57)";
+									break;
+								case 5:
+									bgcol = "rgb(151,112,167)";
+									break;
+								case 6:
+									bgcol = "rgb(243,124,126)";
+									break;
+								default:
+									bgcol = "rgb(206,69,113)";
+								}
+								week_day = datast.daily.data[i].time;
+								var date4 = new Date(week_day*1000);
+								h = date4.getHours();
+								week_day = h;
+								week_date = h;
+								week_icon = datast.daily.data[i].icon;
+								
+								switch (week_icon) { 
+								case 'clear-day':
+									src_img = "images/clear.png";
+									break;
+								case 'clear-night':
+									src_img = "images/clear_night.png";
+									break;
+								case 'rain':
+									src_img = "images/rain.png";
+									break;
+								case 'snow':
+									src_img = "images/snow.png";
+									break;
+								case 'sleet':
+									src_img = "images/sleet.png";
+									break;
+								case 'wind':
+									src_img = "images/wind.png";
+									break;
+								case 'fog':
+									src_img = "images/fog.png";
+									break;
+								case 'cloudy':
+									src_img = "images/cloudy.png";
+									break;
+								case 'partly-cloudy-day':
+									src_img = "images/cloud_day.png";
+									break;
+								default:
+									src_img = "images/cloud_night.png";
+								}
+								week_min_temp =datast.daily.data[i].temperatureMin;
+								week_min_temp = Math.round(week_min_temp);
+								
+								week_max_temp =datast.daily.data[i].temperatureMax;
+								week_max_temp = Math.round(week_max_temp);
+								
+								week_summary = datast.daily.data[i].summary;
+								week_sunrise = datast.daily.data[i].sunriseTime;
+								week_sunset  = datast.daily.data[i].sunsetTime;
+								week_humidity = datast.daily.data[i].humidity;
+								week_humidity = Math.round(week_humidity*100);
+								
+								week_wind = datast.daily.data[i].windSpeed;
+								
+								week_visib = datast.daily.data[i].visibility;
+								
+								week_pressure = datast.daily.data[i].pressure;
+								
+								if(i==1){
+									html_week_insert += '<div class="col-xs-12 col-md-1 col-md-offset-2" style="background-color:';
+								}
+								else{
+									html_week_insert += '<div class="col-xs-12 col-md-1" style="background-color:';
+								}
+								html_week_insert +=	bgcol;
+								if(i==1){
+									html_week_insert += ';height:310px;text-align:center" data-toggle="modal" data-target="#myModal';
+								}
+								else{
+									html_week_insert += ';height:310px; text-align:center;margin-left:20px" data-toggle="modal" data-target="#myModal';
+								}
+								html_week_insert += i;
+								html_week_insert +='"><div class="row">							<div class="col-xs-12 col-md-12" style="margin-top:10px"><span class="font1">';
+								html_week_insert += week_day;
+								html_week_insert += '</span></div>							<div class="col-xs-12 col-md-12" style="margin-top:30px"><span class="font1">';
+								html_week_insert += week_date;
+								html_week_insert += '</span>							</div>							<div class="col-xs-12 col-md-12" align="center" style="margin-top:20px"><img src="';
+								html_week_insert += src_img;
+								html_week_insert += '" style="height:50px"></img>							</div>							<div class="col-xs-12 col-md-12" style="margin-top:10px">								<span class="font2">Min</span>							</div>							<div class="col-xs-12 col-md-12" style="margin-top:15px">								<span class="font2">Temp</span></div>							<div class="col-xs-12 col-md-12" style="margin-top:40px"><span class="font1 font7">';
+								html_week_insert += week_min_temp;
+								html_week_insert += '</span>							</div>							<div class="col-xs-12 col-md-12" style="margin-top:30px">								<span class="font2">Max</span>							</div>							<div class="col-xs-12 col-md-12" style="margin-top:15px">								<span class="font2">Temp</span>							</div>							<div class="col-xs-12 col-md-12" style="margin-top:40px">								<span class="font1 font7">';
+								html_week_insert += week_max_temp;
+								html_week_insert += '</span>							</div>						</div>					</div><div class="modal fade" id="myModal';
+								html_week_insert += i;
+								html_week_insert += '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">						<div class="modal-dialog" role="document">							<div class="modal-content">								<div class="modal-header">									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>									<h4 class="modal-title" id="myModalLabel">Weather in ';
+								html_week_insert += city;
+								html_week_insert += "&nbspon&nbsp";
+								html_week_insert += week_date;
+								html_week_insert += '</h4>								</div>								<div class="modal-body" style="text-align:center">									<div class="row">										<div class="col-xs-12 col-md-12">											<img src="images/clear.png" style="height:100px"></img>										</div>										<div class="col-xs-12 col-md-12" style="margin-top:40px">										<span class="font8">';
+								html_week_insert += week_day;
+								html_week_insert += ':</span><span class="font9">&nbsp ';
+								html_week_insert += week_summary;
+								html_week_insert += '</span>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<div class="fonta">Sunrise Time</div><div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_sunrise;
+								html_week_insert += '</div>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<span class="fonta">Sunset Time</span>											<div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_sunset;
+								html_week_insert += '</div>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<span class="fonta">Humidity</span>											<div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_humidity;
+								html_week_insert += '%</div>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<span class="fonta">Wind Speed</span>											<div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_wind;
+								if(unit=="us"){
+									html_week_insert += 'mph';
+								}
+								else{
+									html_week_insert += 'm/s';
+								}
+								html_week_insert += '</div>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<span class="fonta">Visibility</span>											<div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_visib;
+								if(unit=="us"){
+									html_week_insert += 'mi';
+								}
+								else{
+									html_week_insert += 'km';
+								}
+								html_week_insert += '</div>										</div>										<div class="col-xs-12 col-md-4" style="margin-top:40px">											<span class="fonta">Pressure</span>											<div class="fontb" style="margin-top:30px">';
+								html_week_insert += week_pressure;
+								if(unit=="us"){
+									html_week_insert += 'mb';
+								}
+								else{
+									html_week_insert += 'hPa';
+								}
+								html_week_insert += '</div></div></div></div><div class="modal-footer">									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>								</div>							</div>						</div>					</div>';
+							
+							}
+							
+							html_week_insert += '</div> </p></div></div> </div>   ';
+							
+							$("#myTabContent").append(html_week_insert);
+							/////////////////////////////////////////////
+							
+						}
+				});
+			}
+		});
+		
+		jQuery("#clearButton").click(function() {
+			j.resetForm();
+		});
+	});
+</script>
+<style>
+	label.error {
+		font-weight: bold;
+		font-size:12px;
+		color: red;
+	}
+	#fbButton{
+       background-image: url(images/fb_icon.png);
+	}
+	.back{
+		background-image:url(images/bg.jpg);
+	}
+	.opacity_back {
+		width:930px;
+		height:150px;
+		background-color:black;
+		opacity:0.2;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.container-fluid {
+		width:900px;
+		height:150px;
+		margin-top:-150px;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.container2 {
+		width:930px;
+		height:400px;
+		margin-top:0px;
+		padding-left:0;
+		padding-right:0;
+		line-height:0;
+	}
+	.font1 {
+		color:white;
+		font-weight:bold;
+	}
+	.font2 {
+		color:white;
+		font-weight:normal;
+	}
+	.font3 {
+		color:darkblue;
+		font-weight:bold;
+	}
+	.font4 {
+		font-size:300%;
+	}
+	.font5 {
+		font-weight:normal;
+		color:black
+	}
+	.font6 {
+		color:black;
+	}
+	.font7 {
+		font-size:250%;
+	}
+	.font8 {
+		font-weight:bold;
+		font-size:175%;
+		color:rgb(51,51,51);
+	}
+	.font9 {
+		font-weight:bold;
+		font-size:175%;
+		color:rgb(254,164,1);
+	}
+	.fonta {
+		font-size:125%;
+		color:rgb(51,51,51);
+	}
+	.redfont {
+		color:red;
+		font-weight:bold;
+	}
+	#myTab li.active a{
+		color:white;
+		border-color:white;
+		background-color:rgb(51,122,182);
+	}
+    #myTab li a { 
+		width:130px;
+		font-weight:bold;
+		text-align:center;
+		color:rgb(51,122,182);
+		background-color:lightgrey; 
+	}
+	#myTabContent { 
+		width:900px;
+		margin-left:auto;
+		margin-right:auto;
+		padding-left:0;
+		padding-right:0;
+	}
+
+</style>
+</head>
+
+<body class="back">
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '592504627556845',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<h1 style = "text-align:center; margin-top:50px">Forecast Search</h1>
+<br>
+
+  <div class="opacity_back">
+  </div>
+  <div class="container-fluid">
+  <div class="row" >
+	<form id="searchForm">
+	<div class="col-xs-12 col-md-3" style = "padding-right:0;padding-left:5px;margin-top:10px">
+	<table>
+	<tr><div class="font1">Street Address: <span class="redfont">*</span></div></tr>
+	<tr><input class="form-control" id="addr" name="addr" type="text"></tr>
+	</table>	
+	</div>
+	
+	<div class="col-xs-12 col-md-2" style = "padding-right:0;padding-left:5px;margin-top:10px">
+	<table>
+	<tr><div class="font1">City: <span class="redfont">*</span></div></tr>
+	<tr><input class="form-control" id="city" name="city" type="text"></tr>
+	</table>
+	</div>
+
+	<div class="col-xs-12 col-md-2" style = "padding-right:0;padding-left:5px;margin-top:10px">
+	<table>
+	<tr><div class="font1">State: <span class="redfont">*</span></div></tr>
+	<tr>
+		<div style="height:20px">
+		<SELECT class="form-control" ID="state" NAME="state" style="height:34px">
+						<OPTION value = "" style="padding-left:0px">Select your state...</OPTION>
+						<OPTION value = "AL"> Alabama</OPTION>
+						<OPTION value = "AL"> Alaska</OPTION>
+						<OPTION value = "AL"> Arizona</OPTION>
+						<OPTION value = "AL"> Arkansas</OPTION>
+						<OPTION value = "CA"> California</OPTION>
+						<OPTION value = "CO"> Colorado</OPTION>
+						<OPTION value = "CT"> Connecticut</OPTION>
+						<OPTION value = "DE"> Delaware</OPTION>
+						<OPTION value = "DC"> District Of Columbia</OPTION>
+						<OPTION value = "FL"> Florida</OPTION>
+						<OPTION value = "GA"> Georgia</OPTION>
+						<OPTION value = "HA"> Hawaii</OPTION>
+						<OPTION value = "ID"> Idaho</OPTION>
+						<OPTION value = "IL"> Illinois</OPTION>
+						<OPTION value = "IN"> Indiana</OPTION>
+						<OPTION value = "IA"> Iowa</OPTION>
+						<OPTION value = "KS"> Kansas</OPTION>
+						<OPTION value = "KY"> Kentucky</OPTION>
+						<OPTION value = "LA"> Louisiana</OPTION>
+						<OPTION value = "ME"> Maine</OPTION>
+						<OPTION value = "MD"> Maryland</OPTION>
+						<OPTION value = "MA"> Massachusetts</OPTION>
+						<OPTION value = "MI"> Michigan</OPTION>
+						<OPTION value = "MN"> Minnesota</OPTION>
+						<OPTION value = "MS"> Mississippi</OPTION>
+						<OPTION value = "MO"> Missouri</OPTION>
+						<OPTION value = "MT"> Montana</OPTION>
+						<OPTION value = "NE"> Nebraska</OPTION>
+						<OPTION value = "NV"> Nevada</OPTION>
+						<OPTION value = "NH"> New Hampshire</OPTION>
+						<OPTION value = "NJ"> New Jersey</OPTION>
+						<OPTION value = "NM"> New Mexico</OPTION>
+						<OPTION value = "NY"> New York</OPTION>
+						<OPTION value = "NC"> North Carolina</OPTION>
+						<OPTION value = "ND"> North Dakota</OPTION>
+						<OPTION value = "OH"> Ohio</OPTION>
+						<OPTION value = "OK"> Oklahoma</OPTION>
+						<OPTION value = "OR"> Oregon</OPTION>
+						<OPTION value = "PA"> Pennsylvania</OPTION>
+						<OPTION value = "RI"> Rhode Island</OPTION>
+						<OPTION value = "SC"> South Carolina</OPTION>
+						<OPTION value = "SD"> South Dakota</OPTION>
+						<OPTION value = "TN"> Tennessee</OPTION>
+						<OPTION value = "TX"> Texas</OPTION>
+						<OPTION value = "UT"> Utah</OPTION>
+						<OPTION value = "VT"> Vermont</OPTION>
+						<OPTION value = "VA"> Virginia</OPTION>
+						<OPTION value = "WA"> Washington</OPTION>
+						<OPTION value = "WV"> West Virginia</OPTION>
+						<OPTION value = "WI"> Wisconsin</OPTION>
+						<OPTION value = "WY"> Wyoming</OPTION>
+		</SELECT>
+		</div>
+	</tr>
+	</table>
+	</div>
+	
+	<div class="col-xs-12 col-md-2" style = "padding-right:0;padding-left:5px;margin-top:30px">
+	<table>
+	<tr>
+		<button type="submit" class="btn btn-default" id="searchButton"><span class="font1">Search</span></button>
+		<span style="margin-left:1px;color:black;font-weight:bold">
+		<button type="button" class="btn btn-default" id="clearButton"><span class="font3">Clear</span></button></span>
+	</tr>
+	</table>	
+	</div>
+  
+	</form>
+	
+	<div class="col-xs-12 col-md-12" style="margin-top:10px;">
+	<table align="right" style="margin-right:0px">
+	<tr>
+	<td><span class="font1">Powered by:</span></td>
+	<td><a href="http://forecast.io"><img src="images/forecast_logo.png" class="img-responsive" alt="Responsive image" width="80px"></a></td>
+	</tr>
+	</table>
+	</div>
+	
+  </div>
+  
+  </div>	
+  <hr id="line" style="width:930px; height:1px;border:none;border-top:1px solid white; margin-top:25px">
+
+<div class="container-fluid container2" >
+<ul id="myTab" class="nav nav-tabs" >
+   <li class="active">
+      <a href="#now" data-toggle="tab">Right Now</a>
+   </li>
+   <li><a href="#day" data-toggle="tab">Next 24 Hours</a></li>
+   <li><a href="#week" data-toggle="tab">Next 7 Days</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+		function clickHandler()
+		{
+		   FB.getLoginStatus(function(response) {
+			if (response.status === 'connected') {
+				var uid = response.authResponse.userID;
+				var accessToken = response.authResponse.accessToken;
+				alert("You have authorized.");
+			} 
+			else {
+			  FB.login(function(response) {
+				if (response.authResponse) {
+					console.log('Welcome!  Fetching your information.... ');
+					FB.api('/me', function(response) {
+						console.log('Good to see you, ' + response.name + '.');
+					});
+				} 
+				else {
+					console.log('User cancelled login or did not fully authorize.');
+				}
+			});
+			} 
+
+		});
+		FB.ui({
+			method: 'feed',
+			description: 'Clear,75F',
+			name:'Current Weather in Los Angeles,CA',
+			link: 'http://forecast.io/',
+			picture: 'http://cs-server.usc.edu:45678/hw/hw8/images/fb_icon.png',
+			caption: 'WEATHER INFORMATION FROM FORCAST.IO',
+		}, function(response){});
+	
+		}
+	</script>
+  </head>
+
+<body>
+ <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '592504627556845',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<button type="button" onclick=clickHandler()>share</button>
+</body>
+</html>

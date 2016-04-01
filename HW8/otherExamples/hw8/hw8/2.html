@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="KEEP SILENCE">
+<meta name="author" content="Yanhua Zheng">
+<title>Forecast Search</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./openlayer_tile_files/style.css">
+<script src="./openlayer_tile_files/OpenLayers.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="dist/jquery.validate.js"></script>
+<script src="lib/jquery.form.js"></script>
+<script src="lib/OpenLayers.js"></script>
+<script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script>
+	jQuery(function() {
+		
+        var j = jQuery("#searchForm").validate({
+			rules: {
+				addr: "required",
+				city: "required",
+				state: "required"
+			},
+			messages: {
+				addr: "Please enter the street address",
+				city: "Please enter the city",
+				state: "Please select a state"
+			},
+			submitHandler: function(form) {
+				$.ajax({	
+						url: "http://hw8-env-yohanna.elasticbeanstalk.com/",
+						type: "get",
+						data: { 
+							"addr": "2816 Ellendale Place" ,
+							"city": "LA",
+							"state": "CA",
+							"unit": "us"
+						},
+						error: function(){
+							alert("not Found!");
+						},		
+						success: function( datast ){
+							alert("succeed");
+							weather_icon=datast.currently.icon;
+							weather_summary=datast.currently.summary;
+							city = "Los Angeles";
+							state= "CA";
+							unit= "us";
+							if(unit=='us'){unit_out='&#8457';}
+							else{unit_out='&#8451';}
+							now_temp=Math.round(datast.currently.temperature);
+							now_high_temp =Math.round(datast.daily.data[0].temperatureMax);
+							now_low_temp =Math.round(datast.daily.data[0].temperatureMin);
+							switch (weather_icon) { 
+							case 'clear-day':
+								src_img = "images/clear.png";
+								break;
+							case 'clear-night':
+								src_img = "images/clear_night.png";
+								break;
+							case 'rain':
+								src_img = "images/rain.png";
+								break;
+							case 'snow':
+								src_img = "images/snow.png";
+								break;
+							case 'sleet':
+								src_img = "images/sleet.png";
+								break;
+							case 'wind':
+								src_img = "images/wind.png";
+								break;
+							case 'fog':
+								src_img = "images/fog.png";
+								break;
+							case 'cloudy':
+								src_img = "images/cloudy.png";
+								break;
+							case 'partly-cloudy-day':
+								src_img = "images/cloud_day.png";
+								break;
+							default:
+								src_img = "images/cloud_night.png";
+							}
+							prec_inten=datast.currently.precipIntensity;
+							if(prec_inten<0.002){
+								prec="None";
+							}
+							if(prec_inten>=0.002&&prec_inten<0.017){
+								prec="Very Light";
+							}
+							if(prec_inten>=0.017&&prec_inten<0.1){
+								prec="Light";
+							}
+							if(prec_inten>=0.1&&prec_inten<0.4){
+								prec="Moderate";
+							}
+							if(prec_inten>=0.4){
+								prec="Heavy";
+							}
+							chance=datast.currently.precipProbability;
+							chance=Math.round(100*chance);
+							
+							windSpeed=datast.currently.windSpeed;
+							windSpeed = windSpeed.toFixed(2);
+							
+							dew=datast.currently.dewPoint;
+							dew = dew.toFixed(2);
+							
+							humidity=datast.currently.humidity;
+							humidity=Math.round(100*humidity);
+							
+							visib = datast.currently.visibility;
+							visib = visib.toFixed(2);
+							
+							sunrise = datast.daily.data[0].sunriseTime;
+							sunset  = datast.daily.data[0].sunsetTime;
+							
+							var date = new Date(sunrise*1000);
+							h = date.getHours();
+							m = date.getMinutes() + ' ';
+							if(h>=11){
+								sep_day ="PM";
+								h = h-11;
+							}
+							else{
+								sep_day ="AM";
+							}
+							h = (h+1 < 10 ? '0'+(h+1) : h+1) + ':';
+							sunrise_out = h+m+sep_day;
+							
+							var date2 = new Date(sunset*1000);
+							h = date2.getHours();
+							m = date2.getMinutes() + ' ';
+							if(h>=11){
+								sep_day ="PM";
+								h = h-11;
+							}
+							else{
+								sep_day ="AM";
+							}
+							h = (h+1 < 10 ? '0'+(h+1) : h+1) + ':';
+							sunset_out = h+m+sep_day;
+							
+							//$('#nowWeatherIcon').attr('src',src_img);
+							html_insert ='<span class="tab-pane fade in active" id="now"><div class="row" id="nowSummary"><div class="col-md-6" style="background-color:rgb(250,125,125);height:125px;"><div class="row" id="id1"><div class="col-xs-12 col-md-6"  ><img src="';
+							html_insert += src_img;
+							html_insert +='" style="width:100px;"></img></div><div class="col-xs-12 col-md-6" style="padding-left:0;padding-right:0"><table><tr><td colspan="2" style="text-align:center;"><label for="weather" style="height:30px;margin-top:10px" class="font1">';
+							html_insert +=weather_summary;
+							html_insert +="&nbspin&nbsp";
+							html_insert +=city;
+							html_insert +=',';
+							html_insert +=state;
+							html_insert +='</label></td></tr><tr><td colspan="2" style="text-align:center;"><label for="temp" style="height:30px;" class="font1 font4">';
+							html_insert +=now_temp;
+							html_insert +=unit_out;
+							html_insert +='</label></td></tr><tr><td style="text-align:center;"><label for="hltemp" style="height:30px"><span style="color:blue">L:';
+							html_insert +=now_low_temp;
+							html_insert +=unit_out;
+							html_insert +='</span>|<span style="color:green">H:';
+							html_insert +=now_high_temp;
+							html_insert +=unit_out;
+							html_insert +='</span></label></td><td style="text-align:center;"><img src="images/fb_icon.png" style="width:30px;"></img></td></tr></table></div></div></div><div class="col-xs-12 col-md-6"></div></div></span><div class="tab-pane fade" id="day"><p>iOS 是一果的移动版本。</p> </div><div class="tab-pane fade" id="week"><p>jM序，用于负载和性能测试。</p></div>';
+							$("#myTabContent").append( html_insert );
+							
+							html_insert2 ='<div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Precipitation</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=prec;
+							html_insert2 +='</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Chance of Rain</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=chance;
+							html_insert2 +='%</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Wind Speed</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=windSpeed;
+							if(unit=='us'){
+								html_insert2 +='&nbspmph</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Dew Point</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else {
+								html_insert2 +='&nbspm/s</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Dew Point</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=dew;
+							if(unit=='us'){
+								html_insert2 +='&#8457</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Humidity</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else{
+								html_insert2 +='&#8451</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Humidity</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=humidity;
+							html_insert2 +='%</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Visibility</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=visib;
+							if(unit=='us'){
+								html_insert2 +='&nbspmi</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunrise</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							else{
+								html_insert2 +='&nbspkm</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(250,250,250);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunrise</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							}
+							html_insert2 +=sunrise_out;
+							html_insert2 +='</label></div></div></div><div class="col-xs-12 col-md-12" style="background-color:rgb(242,222,222);height:40px;" ><div class="row"><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">Sunset</label></div><div class="col-xs-6 col-md-6" ><label for="temp" style="height:30px;margin-top:20px" class="font5">';
+							html_insert2 +=sunset_out;
+							html_insert2 +='</label></div></div></div>';
+							$("#id1").append(html_insert2);
+							
+							longti =datast.longitude;
+							lati = datast.latitude;
+							html_insert3='<div class="col-xs-12 col-md-6 olMap" id="basicMap" style="height:445px"></div>';
+							$("#nowSummary").append(html_insert3);
+	/////////////////////////////////////////////
+	var map = new OpenLayers.Map("basicMap");
+    var mapnik = new OpenLayers.Layer.OSM();
+    var layer_cloud = new OpenLayers.Layer.XYZ(
+        "clouds",
+        "http://${s}.tile.openweathermap.org/map/clouds/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.4,
+            sphericalMercator: true
+
+        }
+    );
+
+    var layer_precipitation = new OpenLayers.Layer.XYZ(
+        "precipitation",
+        "http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png",
+        {
+            isBaseLayer: false,
+            opacity: 0.2,
+            sphericalMercator: true
+        }
+    );
+
+    map.addLayers([mapnik,  layer_cloud ,layer_precipitation]);
+    map.setCenter(new OpenLayers.LonLat(-118.2817648,34.0256596 ).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 10);
+	//////////////////////////////////////////
+							
+							html_day_insert1 = '<div class="tab-pane fade" id="day"><div class="row" id="nextDay"><div class="col-xs-12" style="background-color:rgb(51,122,182);;height:35px;"><div class="row" id="nextDay2" style="margin-top:15px;TEXT-ALIGN: center;textVALIGN: center;"><div class="col-xs-2 col-xs-offset-1"><span class="font1">Time</span></div><div class="col-xs-2 "><span class="font1">Summary</span></div><div class="col-xs-2 "><span class="font1">Cloud Cover</span></div><div class="col-xs-2"><span class="font1">Temp(f)</span></div><div class="col-xs-2 "><span class="font1">View Details</span></div></div></div><div class="col-xs-12" style="background-color:white;"><div class="row" id="nextDay2" style="margin-top:15px;TEXT-ALIGN: center;"><div class="col-xs-2 col-xs-offset-1"><span class="font1 font5">';
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+							html_day_insert1 +=  ;
+						}
+				});
+			}
+		});
+		
+		jQuery("#clearButton").click(function() {
+			j.resetForm();
+		});
+	});
+</script>
+<style>
+	label.error {
+		font-weight: bold;
+		font-size:12px;
+		color: red;
+	}
+	.back{
+		background-image:url(images/bg.jpg);
+	}
+	.opacity_back {
+		width:930px;
+		height:150px;
+		background-color:black;
+		opacity:0.2;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.container-fluid {
+		width:900px;
+		height:150px;
+		margin-top:-150px;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.container2 {
+		width:930px;
+		height:400px;
+		margin-top:0px;
+		padding-left:0;
+		padding-right:0;
+		line-height:0;
+	}
+	.font1 {
+		color:white;
+		font-weight:bold;
+	}
+	.font2 {
+		color:white;
+		font-weight:normal;
+	}
+	.font3 {
+		color:darkblue;
+		font-weight:bold;
+	}
+	.font4 {
+		font-size:300%;
+	}
+	.font5 {
+		font-weight:normal;
+		color:black
+	}
+	.redfont {
+		color:red;
+		font-weight:bold;
+	}
+	#myTab li.active a{
+		color:white;
+		border-color:white;
+		background-color:rgb(51,122,182);
+	}
+    #myTab li a { 
+		width:130px;
+		font-weight:bold;
+		text-align:center;
+		color:rgb(51,122,182);
+		background-color:lightgrey; 
+	}
+	#myTabContent { 
+		width:900px;
+		margin-left:auto;
+		margin-right:auto;
+		padding-left:0;
+		padding-right:0;
+	}
+
+</style>
+</head>
+<body>
+<div >
+  <div class="panel panel-default">
+    <div class="panel-heading col-xs-2" role="tab" id="headingOne">
+		<a class="glyphicon glyphicon-plus" data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" ></a>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">Anim par </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Collapsible Group Item #2
+        </a>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+        Anim p
+	  </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

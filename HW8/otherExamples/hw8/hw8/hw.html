@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jQuery validation plug-in - main demo</title>
+	<script src="lib/jquery.js"></script>
+	<script src="dist/jquery.validate.js"></script>
+	<script>
+	$.validator.setDefaults({
+		submitHandler: function() {
+			alert("submitted!");
+		}
+	});
+
+	$().ready(function() {
+		// validate signup form on keyup and submit
+		$("#signupForm").validate({
+			rules: {
+				firstname: "required",
+				lastname: "required",
+			},
+			messages: {
+				firstname: "Please enter your firstname",
+				lastname: "Please enter your lastname",
+			}
+		});
+
+		// propose username by combining first- and lastname
+
+
+
+	});
+	</script>
+	<style>
+	#signupForm {
+		width: 670px;
+	}
+	#signupForm label.error {
+		margin-left: 10px;
+		width: auto;
+		display: inline;
+	}
+	</style>
+</head>
+<body>
+<div id="main">
+	<h1>Forecast Search</h1>
+	<form class="cmxform" id="signupForm" method="get" action="">
+		<fieldset>
+			<legend>Validating a complete form</legend>
+			<p>
+				<label for="firstname">Firstname</label>
+				<input id="firstname" name="firstname" type="text">
+			</p>
+			<p>
+				<label for="lastname">Lastname</label>
+				<input id="lastname" name="lastname" type="text">
+			</p>
+
+			
+			<p>
+				<input class="submit" type="submit" value="Submit">
+			</p>
+		</fieldset>
+	</form>
+</div>
+</body>
+</html>

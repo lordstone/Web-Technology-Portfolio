@@ -1,0 +1,288 @@
+body {
+	background-image: url(../images/bg.jpg);
+	background-repeat: no-repeat;
+	background-position: center top;
+	background-size: auto;
+	background-attachment: fixed;
+}
+
+h2 {
+	text-align: center;
+}
+
+#Search {
+	background: rgba(104, 104, 104, 0.5);
+	padding: 10px;
+	padding-bottom: -8px;
+}
+
+#content {
+	margin: 10px;
+	padding: 18px;
+}
+
+div.form-group {
+	margin-top: 16px;
+}
+
+.ul1 {
+	list-style: none;
+	margin-left: -52px;
+	margin-right: -12px;
+	margin-bottom: -15px;
+}
+
+ul > li {
+	list-style: none;
+}
+
+span.white {
+	color: white;
+}
+
+li.dontshow {
+	visibility: hidden;
+}
+
+#techsupport {
+	margin-bottom: -8px;
+}
+
+span.font1 {
+	color: white;
+	font-size: 15px;
+	font-family: sans-serif;
+}
+
+span.red {
+	color: red;
+}
+
+.red {
+	color: red;
+}
+
+span.black {
+	color: black;
+	font-weight: bolder;
+	font-size: 23px;
+	font-family: monospace;
+}
+
+span.radiofont {
+	color: white;
+	font-size: 13px;
+}
+
+#Seperate {
+	background-color: white;
+	font-weight: bold;
+}
+
+#Result {
+	margin-top: 20px;
+}
+
+.nav-tabs > li > a {
+	background-color: white;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus{
+    color: white;
+    background-color: #337ab7;  
+} 
+
+#clearbtn {
+	width: 88px;
+	margin-left: 5px;
+}
+
+#foreheader {
+	background: rgba(242, 126, 127, 1.0);
+}
+
+#pic {
+	display: block; 
+	margin: auto; 
+	margin-top:8px;
+}
+
+#temp {
+	font-size: 60px;
+	font-weight: bolder;
+}
+
+#tempSpan {
+	float: top;
+	bottom: 40px;
+	float: top;
+}
+
+#lowtemp {
+	color: blue;
+}
+
+#hightemp {
+	color: green;
+}
+
+#facebook {
+	float: right; 
+	position: relative; 
+	bottom: 6px;
+	right: 20px;
+	cursor: pointer;
+}
+
+#foregeo {
+	height: 427px;
+}
+
+#tab {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+
+th.primary {
+	color: white;
+	background-color: #337ab7;
+	text-align: center;
+}
+
+tr.active1 {
+	background-color: white;
+}
+
+table.center {
+	text-align: center;
+}
+
+section.nextday {
+	text-align: center;
+	padding: 0;
+}
+
+#back {
+	background-color: rgb(47, 52, 57);
+	padding-bottom: 10px;
+}
+
+section.friday { 
+	background: rgb(50, 124, 183); 
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.satuaday { 
+	background: rgb(239, 66, 62);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.sunday { 
+	background: rgb(232, 142, 72);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.monday { 
+	background: rgb(167, 165, 46);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.tuesday { 
+	background: rgb(152, 110, 168);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.wednesday { 
+	background: rgb(245, 123, 124);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+section.thursday { 
+	background: rgb(208, 67, 112);
+	margin-right:15px; 
+	margin-top:10px; 
+	border-radius: 10px;
+}
+
+span.date {
+	font-weight: bolder;
+	color: white;
+	padding-bottom: 10px;
+}
+
+span.week {
+	font-weight: bolder;
+	color: white;
+	padding-bottom: 10px;
+	text-align: center;
+
+}
+
+span.temp1 {
+	color: white;
+	font-size: 30px;
+	font-weight: bolder;
+}
+
+span.temp2 {
+	color: white;
+	font-size: 30px;
+	font-weight: bolder;
+}
+
+img.pic1 {
+	margin-top: 10px;
+}
+
+p.center {
+	text-align: center;
+ 	font-weight: bold;
+ 	font-size: 23px;
+}
+
+span.orange {
+	color: rgb(255, 166, 0);
+	font-family: Sans-serif;
+}
+
+span.bold {
+	font-weight: bolder;
+	font-size: 18px;
+}
+
+div.popupContent {
+	text-align: center;
+}
+
+div.error {
+	color: red;
+}
+
+@media only screen and (max-width: 980px) {
+	#back {
+	background-color: transparent;
+	padding-bottom: 10px;
+	}
+}
+
+#temp_postfix {
+	position: relative;
+	bottom: 31px;
+	margin-left: 5px;
+}
+

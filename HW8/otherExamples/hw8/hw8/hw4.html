@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>$.ajax() jQuery AJAX Demo</title>
+	<script src="lib/jquery.js"></script>
+	<script src="dist/jquery.validate.js"></script>
+    <script src="lib/jquery.form.js"></script>
+	<script type="text/javascript">
+		
+		$(
+			function(){
+				// Get a reference to the content div (into which we will load content).
+				var jContent = $( "#content" );				
+				
+				$( "a" ).click(
+					function( objEvent ){
+						var jLink = $( this );
+
+						$( "#ajax-status" ).empty();						
+						// Launch AJAX request.
+						$.ajax(
+							{	
+								url: jLink.attr( "href" ),
+								type: "get",
+								dataType: "html",
+								error: function(){
+									alert("not Found!");
+								},
+								
+								success: function( strData ){
+									alert("succeed");
+								}
+							}							
+							);
+						
+						// Prevent default click.
+						return( false );					
+					}
+					);
+				
+			}
+			);
+		
+	</script>
+</head>
+<body>
+
+	<h1>
+		$.ajax() jQuery AJAX Demo
+	</h1>
+	
+	<p>
+		<a href="about.htm">About</a> -
+		<a href="contact.htm">Contact</a> -
+		<a href="office.htm">Office</a> - 
+		<a href="error.aspx">Error</a>
+	</p>
+	
+	<div id="content" style="float: left ; width: 50% ;">
+		<p>
+			Click on the above links to load content.
+		</p>		
+	</div>	
+	
+	<div id="ajax-status" style="float: right ; width: 45% ;">
+		
+	</div>
+	
+	<br clear="all" />
+	
+<pre>
+hhhhhhhhhhhhhhhhhhhhhhhhh
+</pre>
+	
+</body>
+</html>

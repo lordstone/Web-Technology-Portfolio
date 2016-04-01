@@ -1,0 +1,311 @@
+body{
+    background-image: url('img/bg.jpg');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center top;
+    background-attachment: fixed;
+    padding-left: 100px;
+    padding-right: 100px;
+
+}
+@media (max-width: 980px) {
+    body {
+        padding-top: 0;
+        padding-left: 2px;
+        padding-right: 2px;
+        height: auto;
+        background-repeat: no-repeat;
+        background-size: auto;
+        background-position: center top;
+        background-attachment: fixed;
+    }
+}.current_table{
+    
+}.my7daysimg{
+    
+    max-height: 200px;
+    max-width: 200px;
+}
+@media (max-width: 980px) {
+    .my7daysimg{
+        max-height: 100px;
+        max-width: 100px;
+    }
+    .my7daysbar{
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 0 0 0;
+        padding-bottom: 20px;!important
+        border: 0 solid; 
+        border-radius: 25px;!important
+        margin-top: 20px;!important
+    }.my7daysbar1{
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 0 0 0;
+        padding-bottom: 20px;
+        border: 0 solid; 
+        border-radius: 25px;!important
+    }.my_modal_body{
+        min-height: 600px;
+    }
+}
+@media (min-width: 980px) {
+    .my_modal_body{
+        min-height: 400px;
+    }
+    .my7daysimg{
+    
+        max-height: 70px;
+        max-width: 70px;
+    }
+    .my7daysbar{
+        width: 85px;
+        height: 380px;
+        margin-top: 5px;
+        margin-left: 5px; 
+        margin-right : 5px;  
+        padding-left: 5px; 
+        padding-right: 5px; 
+        border: 0 solid; 
+        border-radius: 10px
+    }.my7daysbar1{
+        width: 85px;
+        height: 380px;
+        margin-top: 5px;
+        margin-right:5px; 
+        padding-left: 5px; 
+        padding-right: 5px; 
+        border: 0 solid; 
+        border-radius: 10px;
+    }
+}.boldones{
+    font-weight: bold;
+    font-size: 20px;
+}
+.my7daystab{
+    padding: 0 0 0 0;
+    
+}.text-bold{
+    font-weight: bold;
+    
+}
+
+
+#fb_button{
+        height: 50px;
+        width: 50px;
+       background-image: url(images/fb_icon.png);
+}.right_now_image_container{
+    align-content: center;
+}
+
+
+
+#map{
+    min-width: 500px;
+    min-height: 452.433px;
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    padding: 0px;
+    
+    
+}.text_asteriod{
+    color: red;
+}.text_white{
+    color: white;
+}.text_blue{
+    color: blue;
+}.text_green{
+    color: green;
+}.text_black{
+    color: black;
+}.text_red{
+    color: red;
+}.img_logo{
+    width: 80px;
+    height: 50px;
+}.bg_transparent{
+    background-color: rgba(0, 0, 0, 0.3)!important;
+    background-repeat: no-repeat !important;
+    min-height: 150px!important;
+
+}.form_top_padding{
+    padding-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}.left_right_padding{
+    padding-left: 20px;
+    padding-right: 20px;
+}.nopadding{
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}.myrow{
+    margin-left: auto !important;
+    margin-right: auto !important;
+}.fixed{
+
+}.bg_color_grey{
+    background-color: lightgrey;
+}.fixed_height{
+    height: 10px;
+}
+.mytablist{
+    
+    
+    
+    
+}
+@media (max-width: 980px) {
+    .mytablist{
+       
+    }.onethird{
+
+    }
+
+}
+
+
+.right_now_holder{
+    background-color: #F17D7E;
+    padding-top: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    height: 447.433px;
+}
+@media (max-width: 980px) {
+    .right_now_holder{
+        background-color: #F17D7E;
+        padding-top: 10px;
+        padding-left: 0;
+        padding-right: 0;
+        min-height: 570px;
+    }
+}
+
+.right_now_img{
+    weight: 100px;
+    height: 100px;
+}.right_now_temperature_text{
+    font-size: 50px;
+    font-weight: bold;
+}.right_now_temperature_sign{
+    font-size: 15px;
+    position: relative;
+    bottom:25px;
+    margin-left: 5px;
+    
+}.fb_logo{
+    weight: 30px;
+    height: 30px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}.big_temp{
+    
+font-size: 30px;
+}#basicMap{
+    height:452.433px;
+    width: 100%;
+}.my7daystab{
+    background-color: #2E3338;
+    min-height: 400px;
+    min-width: 120px;
+    align-content: center;!important
+    align-items: center;!important
+    
+}
+@media(max-width: 980px) {
+    .my7daystab{
+    background-color: transparent;!important
+    min-height: 400px;
+    min-width: 120px;
+    align-content: center;!important
+    align-items: center;!important
+        border: 0;
+    }
+}
+
+.my7daybar{
+    height:365px;
+    width: 90px;
+    text-align:center; 
+    margin-top: 20px; 
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+@media (max-width: 980px) {
+    .my7daybar{
+        height:370px;
+        text-align:center; 
+        margin-top: 20px; !important
+        border-radius: 20px;
+    }
+}
+
+
+
+.next24hr_thead{
+    background-color: #2F70A8;
+    color: white;
+}.next24hr_tbody{
+    background-color: white;
+    
+}.table_align_middle{
+    text-align: center;
+    table-layout: fixed;
+    
+}.my24hrtable{
+    text-align: center;
+    vertical-align: text-top;
+}.modal_image{
+    align-self: center;
+    max-height: 200px !important;
+    max-width: 200px !important;
+}#right_now_weather_image{
+    min-height: 120px;
+    min-width: 120px;
+}.modal_summary{
+    color: #FFA500;
+    font-size: 30px;
+    
+}.modal_day{
+    font-size: 30px;
+}.right_now_summary_text{
+    font-weight: bold;
+    margin-right: 5px;
+}#right_now_summary{
+   
+}.hiddenTR{
+    height: 0; 
+    border: 0 0 0 0; 
+    background-color: white;
+}.hiddenTD{
+    background-color: #F9F9F9; 
+    height: 0; 
+    padding: 0 0 0 0;
+}.hiddenDIV{
+    background-color: #F9F9F9; 
+    padding-left: 10px; 
+    padding-right: 10px; 
+    padding-top: 10px;
+}.hiddenTABLE{
+    background-color: #F9F9F9;
+}.hiddenTHEAD{
+    background-color: white; 
+    border:0 0 0 0;
+}.hiddenTBODY{
+    background-color: #F9F9F9;
+    border:0 0 0 0;
+}
+
+    #myform .has-error .control-label,
+    #myform .has-error .help-block,
+    #myform .has-error .form-control-feedback {
+        color: #f39c12;
+    }
+}        

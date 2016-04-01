@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)http://jqueryvalidation.org/files/demo/custom-messages-data-demo.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>jQuery validation plug-in - comment form example</title>
+<link rel="stylesheet" media="screen" href="./jQuery validation plug-in - comment form example_files/screen.css">
+<script src="./jQuery validation plug-in - comment form example_files/jquery.js"></script><script src="./jQuery validation plug-in - comment form example_files/jquery-1.11.1.js"></script>
+<script src="./jQuery validation plug-in - comment form example_files/jquery.validate.js"></script>
+<script>
+	$(document).ready(function() {
+		$("#commentForm").validate();
+		$("#commentForm2").validate({
+			messages: {
+				email: {
+					required: 'Enter this!'
+				}
+			}
+		});
+	});
+	</script>
+<style>form{width:500px;}form label{width:250px;}form label.error,form input.submit{margin-left:253px;}</style>
+</head>
+<body>
+<h1 id="banner"><a href="http://jqueryvalidation.org/">jQuery Validation Plugin</a> Demo</h1>
+<div id="main">
+<p>Take a look at the source to see how messages can be customized with metadata.</p>
+ 
+<form class="cmxform" id="commentForm" method="post" action="" novalidate="novalidate">
+<fieldset>
+<legend>Please enter your email address</legend>
+<p>
+<label for="cemail">E-Mail *</label>
+<input id="cemail" name="email" data-rule-required="true" data-rule-email="true" data-msg-required="Please enter your email address" data-msg-email="Please enter a valid email address" aria-required="true" class="error" aria-invalid="true"><label id="cemail-error" class="error" for="cemail">Please enter your email address</label>
+</p>
+<p>
+<input class="submit" type="submit" value="Submit">
+</p>
+</fieldset>
+</form>
+ 
+<form class="cmxform" id="commentForm2" method="post" action="" novalidate="novalidate">
+<fieldset>
+<legend>Please enter your email address</legend>
+<p>
+<label for="cemail">E-Mail *</label>
+<input id="cemail" name="email" data-rule-required="true" data-rule-email="true" data-msg-email="Please enter a valid email address" aria-required="true" class="error" aria-invalid="true"><label id="cemail-error" class="error" for="cemail">Enter this!</label>
+</p>
+<p>
+<input class="submit" type="submit" value="Submit">
+</p>
+</fieldset>
+</form>
+<a href="http://jqueryvalidation.org/files/demo/index.html">Back to main page</a>
+</div>
+
+
+</body></html>
